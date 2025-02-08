@@ -1,21 +1,20 @@
 import { useEffect } from "react";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const [, setLocation] = useLocation();
-  const { data: user, isLoading, isError } = useQuery<{name: string}>({ 
-    queryKey: ["/api/me"],
-  });
+
+  // Check if user is authenticated using localStorage for demo
+  const user = localStorage.getItem('demoUser');
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!user) {
       setLocation("/login");
     }
-  }, [user, isLoading, setLocation]);
+  }, [user, setLocation]);
 
-  if (isLoading) {
+  if (!user) {
     return (
       <div className="min-h-screen w-full flex items-center justify-center bg-background">
         <Card>
@@ -27,10 +26,5 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (isError) {
-    setLocation("/login");
-    return null;
-  }
-
-  return user ? <>{children}</> : null;
+  return <>{children}</>;
 }

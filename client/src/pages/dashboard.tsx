@@ -3,19 +3,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import VerifyEmailForm from "@/components/verify-email-form";
 import FindEmailForm from "@/components/find-email-form";
 import { useLocation } from "wouter";
-import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 
 export default function Dashboard() {
   const [, setLocation] = useLocation();
-  const { data: user } = useQuery<{name: string, email: string, picture: string}>({ 
-    queryKey: ["/api/me"],
-  });
+  const userString = localStorage.getItem('demoUser');
+  const user = userString ? JSON.parse(userString) : null;
 
-  const handleLogout = async () => {
-    await fetch("/api/logout", { method: "POST" });
+  const handleLogout = () => {
+    localStorage.removeItem('demoUser');
     setLocation("/login");
   };
 
@@ -25,8 +23,11 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Email Verifier</h1>
+          <h1 className="text-xl font-semibold">Email Verifier Pro</h1>
           <div className="flex items-center gap-4">
+            <div className="text-sm text-muted-foreground">
+              {user.email}
+            </div>
             <Avatar>
               <AvatarImage src={user.picture} />
               <AvatarFallback>{user.name[0]}</AvatarFallback>
