@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { verifyEmailSchema, type VerifyEmailInput } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
 
 export default function VerifyEmailForm() {
   const { toast } = useToast();
@@ -17,8 +16,15 @@ export default function VerifyEmailForm() {
 
   const mutation = useMutation({
     mutationFn: async (data: VerifyEmailInput) => {
-      const res = await apiRequest("POST", "/api/verify-single-email", data);
-      return res.json();
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Dummy validation logic
+      const isValid = data.email.includes("@") && 
+                     data.email.includes(".") && 
+                     data.email.length > 5;
+
+      return { isValid };
     },
     onSuccess: (data) => {
       toast({
