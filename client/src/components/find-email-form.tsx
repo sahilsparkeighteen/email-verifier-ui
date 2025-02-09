@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { findEmailSchema, type FindEmailInput } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function FindEmailForm() {
   const { toast } = useToast();
@@ -16,15 +17,8 @@ export default function FindEmailForm() {
 
   const mutation = useMutation({
     mutationFn: async (data: FindEmailInput) => {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Generate dummy email based on input
-      const nameParts = data.fullName.toLowerCase().split(" ");
-      if (nameParts.length < 2) throw new Error("Please provide both first and last name");
-
-      const email = `${nameParts[0]}.${nameParts[1]}@${data.domain}`;
-      return { email };
+      const res = await apiRequest("POST", "/api/find-valid-email", data);
+      return res.json();
     },
     onSuccess: (data) => {
       toast({
